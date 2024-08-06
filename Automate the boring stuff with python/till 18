@@ -1,0 +1,548 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Apr 03 17:19:49 2017
+
+@author: peeyxli
+"""
+
+#The upper(), lower(), isupper(), and islower() String Methods
+spam = 'Hello world!'
+spam = spam.upper()
+spam
+'HELLO WORLD!'
+spam = spam.lower()
+spam
+'hello world!'
+
+#The isupper() and islower() methods will return a Boolean True value if the 
+#string has at least one letter and all the letters are uppercase or lowercase, respectively.
+
+#isalpha() returns True if the string consists only of letters and is not blank.
+#isalnum() returns True if the string consists only of letters and numbers and is not blank.
+#isdecimal() returns True if the string consists only of numeric characters and is not blank.
+#isspace() returns True if the string consists only of spaces, tabs, and new-lines and is not blank.
+#istitle() returns True if the string consists only of words that begin with an uppercase letter followed by only lowercase letters.
+
+#The startswith() and endswith() String Methods
+
+>>> 'Hello world!'.startswith('Hello')
+True
+>>> 'Hello world!'.endswith('world!')
+True
+>>> 'abc123'.startswith('abcdef')
+False
+>>> 'abc123'.endswith('12')
+False
+>>> 'Hello world!'.startswith('Hello world!')
+True
+>>> 'Hello world!'.endswith('Hello world!')
+True
+
+#The join() and split() String Methods
+>>> ', '.join(['cats', 'rats', 'bats'])
+'cats, rats, bats'
+>>> ' '.join(['My', 'name', 'is', 'Simon'])
+'My name is Simon'
+>>> 'ABC'.join(['My', 'name', 'is', 'Simon'])
+'MyABCnameABCisABCSimon'
+
+>>> 'MyABCnameABCisABCSimon'.split('ABC')
+['My', 'name', 'is', 'Simon']
+>>> 'My name is Simon'.split('m')
+['My na', 'e is Si', 'on']
+
+#Justifying Text with rjust(), ljust(), and center()
+>>> 'Hello'.rjust(10)
+'     Hello'
+>>> 'Hello'.rjust(20)
+'               Hello'
+>>> 'Hello World'.rjust(20)
+'         Hello World'
+>>> 'Hello'.ljust(10)
+'Hello     '
+
+>>> 'Hello'.center(20)
+'       Hello       '
+>>> 'Hello'.center(20, '=')
+'=======Hello========'
+
+>>> 'Hello'.rjust(20, '*')
+'***************Hello'
+>>> 'Hello'.ljust(20, '-')
+'Hello---------------'
+
+#Removing Whitespace with strip(), rstrip(), and lstrip()
+>>> spam = '    Hello World     '
+>>> spam.strip()
+'Hello World'
+>>> spam.lstrip()
+'Hello World '
+>>> spam.rstrip()
+'    Hello World'
+
+>>> spam = 'SpamSpamBaconSpamEggsSpamSpam'
+>>> spam.strip('ampS')
+'BaconSpamEggs'
+
+#Copying and Pasting Strings with the pyperclip Module, module to access computer clipboard
+>>> pyperclip.copy('Hello world!')
+>>> pyperclip.paste()
+'Hello world!'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+Regular Expressions
+'''
+
+#Finding Patterns of Text with Regular Expressions
+#create a Regex object that matches the phone number pattern
+
+>>> phoneNumRegex = re.compile(r'\d\d\d-\d\d\d-\d\d\d\d')
+>>> mo = phoneNumRegex.search('My number is 415-555-4242.')
+>>> print('Phone number found: ' + mo.group())
+Phone number found: 415-555-4242
+
+'''
+Import the regex module with import re.
+
+Create a Regex object with the re.compile() function. (Remember to use a raw string.)
+
+Pass the string you want to search into the Regex object’s search() method. This returns a Match object.
+
+Call the Match object’s group() method to return a string of the actual matched text.
+'''
+
+phoneNumRegex = re.compile(r'(\d\d\d)-(\d\d\d-\d\d\d\d)')
+mo = phoneNumRegex.search('My number is 415-555-4242.')
+mo.group(1)
+'415'
+mo.group(2)
+'555-4242'
+mo.group(0)
+'415-555-4242'
+mo.group()
+'415-555-4242'
+
+mo.groups()
+('415', '555-4242')
+areaCode, mainNumber = mo.groups()
+print(areaCode)
+415
+print(mainNumber)
+555-4242
+
+#Matching Multiple Groups with the Pipe
+heroRegex = re.compile (r'Batman|Tina Fey')
+mo1 = heroRegex.search('Batman and Tina Fey.')
+mo1.group()
+'Batman'
+
+mo2 = heroRegex.search('Tina Fey and Batman.')
+mo2.group()
+'Tina Fey'
+ 
+#use the pipe to match one of several patterns as part of your regex. 
+
+batRegex = re.compile(r'Bat(man|mobile|copter|bat)')
+mo = batRegex.search('Batmobile lost a wheel')
+mo.group()
+'Batmobile'
+mo.group(1)
+'mobile'
+
+#?, +, *, and {} Regular Expression Syntax and Greedy/Non-Greedy Matching
+
+#Match zero or one of the group preceding this question mark.
+>>> phoneRegex = re.compile(r'(\d\d\d-)?\d\d\d-\d\d\d\d')
+>>> mo1 = phoneRegex.search('My number is 415-555-4242')
+>>> mo1.group()
+'415-555-4242'
+
+>>> mo2 = phoneRegex.search('My number is 555-4242')
+>>> mo2.group()
+'555-4242'
+
+#Matching Zero or More with the Star
+>>> batRegex = re.compile(r'Bat(wo)*man')
+>>> mo1 = batRegex.search('The Adventures of Batman')
+>>> mo1.group()
+'Batman'
+
+>>> mo2 = batRegex.search('The Adventures of Batwoman')
+>>> mo2.group()
+'Batwoman'
+
+>>> mo3 = batRegex.search('The Adventures of Batwowowowoman')
+>>> mo3.group()
+'Batwowowowoman'
+
+#Matching One or More with the Plus
+>>> batRegex = re.compile(r'Bat(wo)+man')
+>>> mo1 = batRegex.search('The Adventures of Batwoman')
+>>> mo1.group()
+'Batwoman'
+
+>>> mo2 = batRegex.search('The Adventures of Batwowowowoman')
+>>> mo2.group()
+'Batwowowowoman'
+
+>>> mo3 = batRegex.search('The Adventures of Batman')
+>>> mo3 == None
+True
+
+#Matching Specific Repetitions with Curly Brackets
+(Ha){3} = (Ha)(Ha)(Ha)
+(Ha){3,5} = ((Ha)(Ha)(Ha))|((Ha)(Ha)(Ha)(Ha))|((Ha)(Ha)(Ha)(Ha)(Ha))
+
+>>> haRegex = re.compile(r'(Ha){3}')
+>>> mo1 = haRegex.search('HaHaHa')
+>>> mo1.group()
+'HaHaHa'
+
+>>> mo2 = haRegex.search('Ha')
+>>> mo2 == None
+True
+
+#Greedy and Nongreedy Matching
+'''
+Python’s regular expressions are greedy by default, 
+which means that in ambiguous situations they will match the longest string possible. 
+The non-greedy version of the curly brackets, 
+which matches the shortest string possible, 
+has the closing curly bracket followed by a question mark.
+'''
+
+>>> greedyHaRegex = re.compile(r'(Ha){3,5}')
+>>> mo1 = greedyHaRegex.search('HaHaHaHaHa')
+>>> mo1.group()
+'HaHaHaHaHa'
+
+>>> nongreedyHaRegex = re.compile(r'(Ha){3,5}?')
+>>> mo2 = nongreedyHaRegex.search('HaHaHaHaHa')
+>>> mo2.group()
+'HaHaHa'
+
+#The findall() Method
+>>> phoneNumRegex = re.compile(r'\d\d\d-\d\d\d-\d\d\d\d') # has no groups
+>>> phoneNumRegex.findall('Cell: 415-555-9999 Work: 212-555-0000')
+['415-555-9999', '212-555-0000']
+
+
+
+\d
+
+Any numeric digit from 0 to 9.
+
+\D
+
+Any character that is not a numeric digit from 0 to 9.
+
+\w
+
+Any letter, numeric digit, or the underscore character. (Think of this as matching “word” characters.)
+
+\W
+
+Any character that is not a letter, numeric digit, or the underscore character.
+
+\s
+
+Any space, tab, or newline character. (Think of this as matching “space” characters.)
+
+\S
+
+Any character that is not a space, tab, or newline.
+
+#You can also use the caret symbol (^) at the start of a regex to indicate that a match 
+#must occur at the beginning of the searched text. Likewise, you can put a 
+#dollar sign ($) at the end of the regex to indicate the string must end with this regex pattern. 
+
+#Matching Newlines with the Dot Character
+>>> noNewlineRegex = re.compile('.*')
+>>> noNewlineRegex.search('Serve the public trust.\nProtect the innocent.
+\nUphold the law.').group()
+'Serve the public trust.'
+
+>>> newlineRegex = re.compile('.*', re.DOTALL)
+>>> newlineRegex.search('Serve the public trust.\nProtect the innocent.
+\nUphold the law.').group()
+'Serve the public trust.\nProtect the innocent.\nUphold the law
+
+#Case-Insensitive Matching
+>>> robocop = re.compile(r'robocop', re.I)
+>>> robocop.search('Robocop is part man, part machine, all cop.').group()
+'Robocop'
+
+>>> robocop.search('ROBOCOP protects the innocent.').group()
+'ROBOCOP'
+
+>>> robocop.search('Al, why does your programming book talk about robocop so much?').group()
+'robocop'
+#Substituting Strings with the sub() Method
+>>> namesRegex = re.compile(r'Agent \w+')
+>>> namesRegex.sub('CENSORED', 'Agent Alice gave the secret documents to Agent Bob.')
+'CENSORED gave the secret documents to CENSORED.'
+
+#Managing Complex Regexes
+phoneRegex = re.compile(r'((\d{3}|\(\d{3}\))?(\s|-|\.)?\d{3}(\s|-|\.)\d{4}
+(\s*(ext|x|ext.)\s*\d{2,5})?)')
+phoneRegex = re.compile(r'''(
+    (\d{3}|\(\d{3}\))?            # area code
+    (\s|-|\.)?                    # separator
+    \d{3}                         # first 3 digits
+    (\s|-|\.)                     # separator
+    \d{4}                         # last 4 digits
+    (\s*(ext|x|ext.)\s*\d{2,5})?  # extension
+    )''', re.VERBOSE)
+
+#Combining re.IGNORECASE, re.DOTALL, and re.VERBOSE
+>>> someRegexValue = re.compile('foo', re.IGNORECASE | re.DOTALL | re.VERBOSE)
+
+
+
+# A single period (“dot”) for a folder name is shorthand for “this directory.” Two periods (“dot-dot”) means “the parent folder.”
+
+#Saving Variables with the shelve Module
+>>> import shelve
+>>> shelfFile = shelve.open('mydata')
+>>> cats = ['Zophie', 'Pooka', 'Simon']
+>>> shelfFile['cats'] = cats
+>>> shelfFile.close()
+
+#Saving Variables with the pprint.pformat() Function
+
+#Copying Files and Folders
+>>> import shutil, os
+>>> os.chdir('C:\\')
+>>> shutil.copy('C:\\spam.txt', 'C:\\delicious')
+'C:\\delicious\\spam.txt'
+>>> shutil.copy('eggs.txt', 'C:\\delicious\\eggs2.txt')
+'C:\\delicious\\eggs2.txt'
+
+#While shutil.copy() will copy a single file, 
+#shutil.copytree() will copy an entire folder and every folder and file contained in it.
+
+#Calling os.unlink(path) will delete the file at path.
+
+#Calling os.rmdir(path) will delete the folder at path. 
+#This folder must be empty of any files or folders.
+
+#Calling shutil.rmtree(path) will remove the folder at path, 
+#and all files and folders it contains will also be deleted.
+
+#Safe Deletes with the send2trash Module
+#Using send2trash is much safer than Python’s regular delete functions, 
+#because it will send folders and files to your computer’s trash or recycle bin 
+#instead of permanently deleting them.
+
+>>> import send2trash
+>>> baconFile = open('bacon.txt', 'a') # creates the file
+>>> baconFile.write('Bacon is not a vegetable.')
+25
+>>> baconFile.close()
+>>> send2trash.send2trash('bacon.txt')
+
+#Compressing Files with the zipfile Module
+>>> import zipfile, os
+>>> os.chdir('C:\\')    # move to the folder with example.zip
+>>> exampleZip = zipfile.ZipFile('example.zip')
+>>> exampleZip.namelist()
+['spam.txt', 'cats/', 'cats/catnames.txt', 'cats/zophie.jpg']
+>>> spamInfo = exampleZip.getinfo('spam.txt')
+>>> spamInfo.file_size
+13908
+>>> spamInfo.compress_size
+3828
+>>> 'Compressed file is %sx smaller!' % (round(spamInfo.file_size / spamInfo
+.compress_size, 2))
+'Compressed file is 3.63x smaller!'
+>>> exampleZip.close()
+
+#Extracting from ZIP Files
+>>> import zipfile, os
+>>> os.chdir('C:\\')    # move to the folder with example.zip
+>>> exampleZip = zipfile.ZipFile('example.zip')
+>>> exampleZip.extractall('C:\\ delicious')
+>>> exampleZip.close()
+
+#Creating and Adding to ZIP Files
+>>> import zipfile
+>>> newZip = zipfile.ZipFile('new.zip', 'w')
+>>> newZip.write('spam.txt', compress_type=zipfile.ZIP_DEFLATED)
+>>> newZip.close()
+
+
+
+
+
+
+
+
+
+
+#Web Scraping
+#The webbrowser module’s open() function can launch a new browser to a specified URL. 
+>>> import webbrowser
+>>> webbrowser.open('http://inventwithpython.com/')
+
+#Downloading Files from the Web with the requests Module
+
+#Downloading a Web Page with the requests.get() Function
+>>> import requests
+>>> res = requests.get('https://automatetheboringstuff.com/files/rj.txt')
+>>> type(res)
+<class 'requests.models.Response'>
+>>> res.status_code == requests.codes.ok
+True
+>>> len(res.text)
+178981
+>>> print(res.text[:250])
+
+#Parsing HTML with the BeautifulSoup Module
+
+
+
+
+
+
+#Working with Excel Spreadsheets
+#Opening Excel Documents with OpenPyXL
+>>> import openpyxl
+>>> wb = openpyxl.load_workbook('example.xlsx')
+
+#Getting Sheets from the Workbook
+>>> import openpyxl
+>>> wb = openpyxl.load_workbook('example.xlsx')
+>>> wb.get_sheet_names()
+['Sheet1', 'Sheet2', 'Sheet3']
+>>> sheet = wb.get_sheet_by_name('Sheet3')
+>>> sheet
+<Worksheet "Sheet3">
+>>> type(sheet) <class 'openpyxl.worksheet.worksheet.Worksheet'>
+>>> sheet.title
+'Sheet3'
+>>> anotherSheet = wb.active
+>>> anotherSheet
+<Worksheet "Sheet1">
+
+#Getting Cells from the Sheets
+>>> import openpyxl
+>>> wb = openpyxl.load_workbook('example.xlsx')
+>>> sheet = wb.get_sheet_by_name('Sheet1')
+>>> sheet['A1']
+<Cell Sheet1.A1>
+>>> sheet['A1'].value
+datetime.datetime(2015, 4, 5, 13, 34, 2)
+>>> c = sheet['B1']
+>>> c.value
+'Apples'
+>>> 'Row ' + str(c.row) + ', Column ' + c.column + ' is ' + c.value
+'Row 1, Column B is Apples'
+>>> 'Cell ' + c.coordinate + ' is ' + c.value
+'Cell B1 is Apples'
+>>> sheet['C1'].value
+73
+
+#Working with PDF and Word Documents
+
+#Extracting Text from PDFs
+import PyPDF2
+#Reading Word Documents
+import docx
+
+#Working with CSV Files and JSON Data
+import csv
+import json
+
+# Keeping Time, Scheduling Tasks, and Launching Programs
+import time
+time.time()
+time.sleep()
+
+import datetime
+datetime.datetime.now()
+
+import threading
+
+#Sending Email and Text Messages
+import smtplib
+import imapclient
+import pyzmail
+
+# Manipulating Images
+import PIL
+
+#Controlling the Keyboard and Mouse with GUI Automation
+import pyautogui
+
+pyautogui.PAUSE = 1
+pyautogui.FAILSAFE = True
+
+#get screen size
+width, height = pyautogui.size()
+#moving the mouse
+#absolute position movement
+for i in range(10):
+      pyautogui.moveTo(100, 100, duration=0.25)
+      pyautogui.moveTo(200, 100, duration=0.25)
+      pyautogui.moveTo(200, 200, duration=0.25)
+      pyautogui.moveTo(100, 200, duration=0.25)
+
+#relative position movement
+for i in range(10):
+      pyautogui.moveRel(100, 0, duration=0.25)
+      pyautogui.moveRel(0, 100, duration=0.25)
+      pyautogui.moveRel(-100, 0, duration=0.25)
+      pyautogui.moveRel(0, -100, duration=0.25)
+      
+#get mouse position
+x,y  = pyautogui.position()
+
+
+#mouse control
+print"press CTRL-C to quit"
+try:
+    while True:
+    x,y = pyautogui.position()
+    positionStr = 'X: ' + str(x).rjust(4) + 'Y: ' + str(y).rjust(4)
+    print(positionStr, end = ' ')
+    print('\b' * len(positionStr), end = '',flush = True)
+except KeyBoardInterrput:
+    print"\nDone"
+    
+#Clicking the Mouse
+pyautogui.click(10,5) #defualt as left button
+pyautogui.click(100,150,button = 'left')
+pyautogui.click(200,250,button = 'right')
+
+pyautogui.mouseDown()
+pyautogui.mouseUp()
+pyautogui.doubleClick()
+pyautogui.rightClick()
+pyautogui.middleClick()
+
+pyautogui.dragTo() #dragging by absolute position
+pyautogui.dragRel()#dragging by relative position
+pyautogui.scroll()
+pyautogui.screenshot()
+pyautogui.pixelMatchesColor()
+
+#Control the keyboard
+pyautogui.typewrite()
+
+
